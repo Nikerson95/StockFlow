@@ -38,6 +38,48 @@ public class Product
         MinimumStock = minimumStock;
     }
 
+    public void AddStock(int quantity)
+    {
+        if (quantity <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(quantity),
+                "A quantidade adicionada deve ser maior que zero.");
+        }
+
+        Quantity += quantity;
+    }
+
+    public void RemoveStock(int quantity)
+    {
+        if (quantity <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(quantity),
+                "A quantidade removida deve ser maior que zero.");
+        }
+
+        if (quantity > Quantity)
+        {
+            throw new InvalidOperationException(
+                "Não há estoque suficiente para realizar a saída.");
+        }
+
+        Quantity -= quantity;
+    }
+
+    public void ChangePrice(decimal newPrice)
+    {
+        ValidatePrice(newPrice);
+
+        Price = newPrice;
+    }
+
+    public bool IsBelowMinimumStock()
+    {
+        return Quantity < MinimumStock;
+    }
+
     private static void ValidateName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))

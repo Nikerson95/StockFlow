@@ -72,4 +72,93 @@ public class ProductTests
 
         Assert.Throws<ArgumentOutOfRangeException>(action);
     }
+    [Fact]
+public void AddStock_WithValidQuantity_ShouldIncreaseQuantity()
+{
+    var product = new Product(
+        "Teclado",
+        "Teclado mecânico",
+        250m,
+        10,
+        5);
+
+    product.AddStock(5);
+
+    Assert.Equal(15, product.Quantity);
+}
+
+[Fact]
+public void AddStock_WithZeroQuantity_ShouldThrowArgumentOutOfRangeException()
+{
+    var product = new Product(
+        "Teclado",
+        "Teclado mecânico",
+        250m,
+        10,
+        5);
+
+    var action = () => product.AddStock(0);
+
+    Assert.Throws<ArgumentOutOfRangeException>(action);
+}
+
+[Fact]
+public void RemoveStock_WithValidQuantity_ShouldDecreaseQuantity()
+{
+    var product = new Product(
+        "Teclado",
+        "Teclado mecânico",
+        250m,
+        10,
+        5);
+
+    product.RemoveStock(4);
+
+    Assert.Equal(6, product.Quantity);
+}
+
+[Fact]
+public void RemoveStock_WithQuantityGreaterThanStock_ShouldThrowInvalidOperationException()
+{
+    var product = new Product(
+        "Teclado",
+        "Teclado mecânico",
+        250m,
+        10,
+        5);
+
+    var action = () => product.RemoveStock(11);
+
+    Assert.Throws<InvalidOperationException>(action);
+}
+
+[Fact]
+public void ChangePrice_WithValidPrice_ShouldUpdatePrice()
+{
+    var product = new Product(
+        "Teclado",
+        "Teclado mecânico",
+        250m,
+        10,
+        5);
+
+    product.ChangePrice(199.90m);
+
+    Assert.Equal(199.90m, product.Price);
+}
+
+[Fact]
+public void IsBelowMinimumStock_WhenQuantityIsLower_ShouldReturnTrue()
+{
+    var product = new Product(
+        "Teclado",
+        "Teclado mecânico",
+        250m,
+        4,
+        5);
+
+    var result = product.IsBelowMinimumStock();
+
+    Assert.True(result);
+}
 }
