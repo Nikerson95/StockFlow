@@ -16,8 +16,6 @@ public class Product
 
     private Product()
     {
-        
-        
     }
 
     public Product(
@@ -27,11 +25,63 @@ public class Product
         int quantity,
         int minimumStock)
     {
+        ValidateName(name);
+        ValidatePrice(price);
+        ValidateQuantity(quantity);
+        ValidateMinimumStock(minimumStock);
+
         Id = Guid.NewGuid();
-        Name = name;
-        Description = description;
+        Name = name.Trim();
+        Description = description.Trim();
         Price = price;
         Quantity = quantity;
         MinimumStock = minimumStock;
+    }
+
+    private static void ValidateName(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException(
+                "O nome do produto é obrigatório.",
+                nameof(name));
+        }
+
+        if (name.Length > 150)
+        {
+            throw new ArgumentException(
+                "O nome do produto deve ter no máximo 150 caracteres.",
+                nameof(name));
+        }
+    }
+
+    private static void ValidatePrice(decimal price)
+    {
+        if (price < 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(price),
+                "O preço do produto não pode ser negativo.");
+        }
+    }
+
+    private static void ValidateQuantity(int quantity)
+    {
+        if (quantity < 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(quantity),
+                "A quantidade do produto não pode ser negativa.");
+        }
+    }
+
+    private static void ValidateMinimumStock(int minimumStock)
+    {
+        if (minimumStock < 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(minimumStock),
+                "O estoque mínimo não pode ser negativo.");
+        }
     }
 }
