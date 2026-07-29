@@ -1,6 +1,9 @@
 using Scalar.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using StockFlow.Infrastructure.Persistence;
+using StockFlow.Application.Repositories;
+using StockFlow.Infrastructure.Repositories;
+using StockFlow.Application.Categories.Create;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,9 @@ var connectionString = builder.Configuration.GetConnectionString(
 
 builder.Services.AddDbContext<StockFlowDbContext>(options =>
     options.UseSqlServer(connectionString));
+
+    builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+    builder.Services.AddScoped<CreateCategoryUseCase>();
 
 var app = builder.Build();
 
