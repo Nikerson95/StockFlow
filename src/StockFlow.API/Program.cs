@@ -4,6 +4,7 @@ using StockFlow.Infrastructure.Persistence;
 using StockFlow.Application.Repositories;
 using StockFlow.Infrastructure.Repositories;
 using StockFlow.Application.Categories.Create;
+using StockFlow.Application.Categories.GetAll;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,7 @@ builder.Services.AddDbContext<StockFlowDbContext>(options =>
 
     builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
     builder.Services.AddScoped<CreateCategoryUseCase>();
+    builder.Services.AddScoped<GetAllCategoriesUseCase>();
 
 var app = builder.Build();
 

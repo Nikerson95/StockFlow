@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using StockFlow.Application.Categories.Create;
+using StockFlow.Application.Categories.GetAll;
 
 namespace StockFlow.API.Controllers;
 
@@ -8,12 +9,15 @@ namespace StockFlow.API.Controllers;
 public class CategoriesController : ControllerBase
 {
     private readonly CreateCategoryUseCase _createCategoryUseCase;
+private readonly GetAllCategoriesUseCase _getAllCategoriesUseCase;
 
     public CategoriesController(
-        CreateCategoryUseCase createCategoryUseCase)
-    {
-        _createCategoryUseCase = createCategoryUseCase;
-    }
+    CreateCategoryUseCase createCategoryUseCase,
+    GetAllCategoriesUseCase getAllCategoriesUseCase)
+{
+    _createCategoryUseCase = createCategoryUseCase;
+    _getAllCategoriesUseCase = getAllCategoriesUseCase;
+}
 
     [HttpPost]
     [ProducesResponseType<CreateCategoryResponse>(
@@ -32,4 +36,16 @@ public class CategoriesController : ControllerBase
             StatusCodes.Status201Created,
             response);
     }
+    
+    [HttpGet]
+[ProducesResponseType<IReadOnlyList<GetAllCategoriesResponse>>(
+    StatusCodes.Status200OK)]
+public async Task<ActionResult<IReadOnlyList<GetAllCategoriesResponse>>>
+    GetAllAsync(CancellationToken cancellationToken)
+{
+    var response = await _getAllCategoriesUseCase.ExecuteAsync(
+        cancellationToken);
+
+    return Ok(response);
+}
 }
