@@ -8,6 +8,7 @@ using StockFlow.Application.Categories.GetAll;
 using StockFlow.Application.Categories.GetById;
 using StockFlow.Application.Categories.Update;
 using StockFlow.Application.Categories.Delete;
+using StockFlow.Application.Products.Create;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,12 +24,16 @@ var connectionString = builder.Configuration.GetConnectionString(
 builder.Services.AddDbContext<StockFlowDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-    builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-    builder.Services.AddScoped<CreateCategoryUseCase>();
-    builder.Services.AddScoped<GetAllCategoriesUseCase>();
-    builder.Services.AddScoped<GetCategoryByIdUseCase>();
-    builder.Services.AddScoped<UpdateCategoryUseCase>();
-    builder.Services.AddScoped<DeleteCategoryUseCase>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+builder.Services.AddScoped<CreateCategoryUseCase>();
+builder.Services.AddScoped<GetAllCategoriesUseCase>();
+builder.Services.AddScoped<GetCategoryByIdUseCase>();
+builder.Services.AddScoped<UpdateCategoryUseCase>();
+builder.Services.AddScoped<DeleteCategoryUseCase>();
+
+builder.Services.AddScoped<CreateProductUseCase>();
 
 var app = builder.Build();
 
