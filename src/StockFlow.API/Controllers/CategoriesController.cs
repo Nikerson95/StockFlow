@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using StockFlow.Application.Categories.Create;
 using StockFlow.Application.Categories.GetAll;
 using StockFlow.Application.Categories.GetById;
+using StockFlow.Application.Categories.Update;
 namespace StockFlow.API.Controllers;
 
 [ApiController]
@@ -12,14 +13,18 @@ public class CategoriesController : ControllerBase
 private readonly GetAllCategoriesUseCase _getAllCategoriesUseCase;
 private readonly GetCategoryByIdUseCase _getCategoryByIdUseCase;
 
+private readonly UpdateCategoryUseCase _updateCategoryUseCase;
+
     public CategoriesController(
     CreateCategoryUseCase createCategoryUseCase,
     GetAllCategoriesUseCase getAllCategoriesUseCase,
-    GetCategoryByIdUseCase getCategoryByIdUseCase)
+    GetCategoryByIdUseCase getCategoryByIdUseCase,
+    UpdateCategoryUseCase updateCategoryUseCase)
 {
     _createCategoryUseCase = createCategoryUseCase;
     _getAllCategoriesUseCase = getAllCategoriesUseCase;
     _getCategoryByIdUseCase = getCategoryByIdUseCase;
+    _updateCategoryUseCase = updateCategoryUseCase;
 }
 
 
@@ -65,6 +70,31 @@ public async Task<ActionResult<GetCategoryByIdResponse>> GetByIdAsync(
 {
     var response = await _getCategoryByIdUseCase.ExecuteAsync(
         id,
+        cancellationToken);
+
+    if (response is null)
+    {
+        return NotFound();
+    }
+
+    return Ok(response);
+}
+
+[HttpPut("{id:guid}")]
+[ProducesResponseType<UpdateCategoryResponse>(
+    StatusCodes.Status200OK)]
+[ProducesResponseType(
+    StatusCodes.Status404NotFound)]
+[ProducesResponseType(
+    StatusCodes.Status400BadRequest)]
+public async Task<ActionResult<UpdateCategoryResponse>> UpdateAsync(
+    Guid id,
+    UpdateCategoryRequest request,
+    CancellationToken cancellationToken)
+{
+    var response = await _updateCategoryUseCase.ExecuteAsync(
+        id,
+        request,
         cancellationToken);
 
     if (response is null)
