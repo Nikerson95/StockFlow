@@ -3,6 +3,7 @@ using StockFlow.Application.Categories.Create;
 using StockFlow.Application.Categories.GetAll;
 using StockFlow.Application.Categories.GetById;
 using StockFlow.Application.Categories.Update;
+using StockFlow.Application.Categories.Delete;
 namespace StockFlow.API.Controllers;
 
 [ApiController]
@@ -12,19 +13,21 @@ public class CategoriesController : ControllerBase
     private readonly CreateCategoryUseCase _createCategoryUseCase;
 private readonly GetAllCategoriesUseCase _getAllCategoriesUseCase;
 private readonly GetCategoryByIdUseCase _getCategoryByIdUseCase;
-
 private readonly UpdateCategoryUseCase _updateCategoryUseCase;
+private readonly DeleteCategoryUseCase _deleteCategoryUseCase;
 
     public CategoriesController(
     CreateCategoryUseCase createCategoryUseCase,
     GetAllCategoriesUseCase getAllCategoriesUseCase,
     GetCategoryByIdUseCase getCategoryByIdUseCase,
-    UpdateCategoryUseCase updateCategoryUseCase)
+    UpdateCategoryUseCase updateCategoryUseCase,
+    DeleteCategoryUseCase deleteCategoryUseCase)
 {
     _createCategoryUseCase = createCategoryUseCase;
     _getAllCategoriesUseCase = getAllCategoriesUseCase;
     _getCategoryByIdUseCase = getCategoryByIdUseCase;
     _updateCategoryUseCase = updateCategoryUseCase;
+    _deleteCategoryUseCase = deleteCategoryUseCase;
 }
 
 
@@ -103,6 +106,25 @@ public async Task<ActionResult<UpdateCategoryResponse>> UpdateAsync(
     }
 
     return Ok(response);
+}
+
+[HttpDelete("{id:guid}")]
+[ProducesResponseType(StatusCodes.Status204NoContent)]
+[ProducesResponseType(StatusCodes.Status404NotFound)]
+public async Task<IActionResult> DeleteAsync(
+    Guid id,
+    CancellationToken cancellationToken)
+{
+    var deleted = await _deleteCategoryUseCase.ExecuteAsync(
+        id,
+        cancellationToken);
+
+    if (!deleted)
+    {
+        return NotFound();
+    }
+
+    return NoContent();
 }
 
 }

@@ -7,6 +7,7 @@ using StockFlow.Application.Categories.Create;
 using StockFlow.Application.Categories.GetAll;
 using StockFlow.Application.Categories.GetById;
 using StockFlow.Application.Categories.Update;
+using StockFlow.Application.Categories.Delete;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,7 @@ builder.Services.AddDbContext<StockFlowDbContext>(options =>
     builder.Services.AddScoped<GetAllCategoriesUseCase>();
     builder.Services.AddScoped<GetCategoryByIdUseCase>();
     builder.Services.AddScoped<UpdateCategoryUseCase>();
+    builder.Services.AddScoped<DeleteCategoryUseCase>();
 
 var app = builder.Build();
 
