@@ -28,5 +28,12 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 
         builder.Property(product => product.MinimumStock)
             .IsRequired();
+            builder.Property(product => product.CategoryId)
+    .IsRequired();
+
+builder.HasOne(product => product.Category)
+    .WithMany()
+    .HasForeignKey(product => product.CategoryId)
+    .OnDelete(DeleteBehavior.Restrict);
     }
 }

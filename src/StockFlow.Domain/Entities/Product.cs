@@ -14,29 +14,33 @@ public class Product
 
     public int MinimumStock { get; private set; }
 
-    private Product()
-    {
-    }
+    public Guid CategoryId { get; private set; }
 
-    public Product(
-        string name,
-        string description,
-        decimal price,
-        int quantity,
-        int minimumStock)
-    {
-        ValidateName(name);
-        ValidatePrice(price);
-        ValidateQuantity(quantity);
-        ValidateMinimumStock(minimumStock);
+public Category Category { get; private set; } = null!;
 
-        Id = Guid.NewGuid();
-        Name = name.Trim();
-        Description = description.Trim();
-        Price = price;
-        Quantity = quantity;
-        MinimumStock = minimumStock;
-    }
+public Product(
+    string name,
+    string description,
+    decimal price,
+    int quantity,
+    int minimumStock,
+    Guid categoryId)
+{
+    ValidateName(name);
+    ValidatePrice(price);
+    ValidateQuantity(quantity);
+    ValidateMinimumStock(minimumStock);
+    ValidateCategoryId(categoryId);
+
+    Id = Guid.NewGuid();
+    Name = name.Trim();
+    Description = description.Trim();
+    Price = price;
+    Quantity = quantity;
+    MinimumStock = minimumStock;
+    CategoryId = categoryId;
+}
+    
 
     public void AddStock(int quantity)
     {
@@ -126,4 +130,14 @@ public class Product
                 "O estoque mínimo não pode ser negativo.");
         }
     }
+
+    private static void ValidateCategoryId(Guid categoryId)
+{
+    if (categoryId == Guid.Empty)
+    {
+        throw new ArgumentException(
+            "A categoria do produto é obrigatória.",
+            nameof(categoryId));
+    }
+}
 }
