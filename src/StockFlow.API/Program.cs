@@ -10,6 +10,7 @@ using StockFlow.Application.Categories.Update;
 using StockFlow.Application.Categories.Delete;
 using StockFlow.Application.Products.Create;
 using StockFlow.Application.Products.GetAll;
+using StockFlow.Application.Products.GetById;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,7 @@ builder.Services.AddDbContext<StockFlowDbContext>(options =>
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<GetProductByIdUseCase>();
 
 builder.Services.AddScoped<CreateCategoryUseCase>();
 builder.Services.AddScoped<GetAllCategoriesUseCase>();
