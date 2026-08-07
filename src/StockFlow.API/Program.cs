@@ -9,6 +9,7 @@ using StockFlow.Application.Categories.GetById;
 using StockFlow.Application.Categories.Update;
 using StockFlow.Application.Categories.Delete;
 using StockFlow.Application.Products.Create;
+using StockFlow.Application.Products.GetAll;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,7 @@ builder.Services.AddScoped<GetAllCategoriesUseCase>();
 builder.Services.AddScoped<GetCategoryByIdUseCase>();
 builder.Services.AddScoped<UpdateCategoryUseCase>();
 builder.Services.AddScoped<DeleteCategoryUseCase>();
+builder.Services.AddScoped<GetAllProductsUseCase>();
 
 builder.Services.AddScoped<CreateProductUseCase>();
 
