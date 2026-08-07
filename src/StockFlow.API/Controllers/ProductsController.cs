@@ -4,6 +4,8 @@ using StockFlow.Application.Products.GetAll;
 using StockFlow.Application.Products.GetById;
 using StockFlow.Application.Products.Update;
 using StockFlow.Application.Products.Delete;
+using StockFlow.Application.Stock.Entry;
+using StockFlow.Application.Stock.Exit;
 
 namespace StockFlow.API.Controllers;
 
@@ -16,19 +18,25 @@ public class ProductsController : ControllerBase
     private readonly GetProductByIdUseCase _getProductByIdUseCase;
     private readonly UpdateProductUseCase _updateProductUseCase;
     private readonly DeleteProductUseCase _deleteProductUseCase;
+    private readonly AddStockUseCase _addStockUseCase;
+    private readonly RemoveStockUseCase _removeStockUseCase;
 
     public ProductsController(
     CreateProductUseCase createProductUseCase,
     GetAllProductsUseCase getAllProductsUseCase,
     GetProductByIdUseCase getProductByIdUseCase,
     UpdateProductUseCase updateProductUseCase,
-    DeleteProductUseCase deleteProductUseCase)
+    DeleteProductUseCase deleteProductUseCase,
+    AddStockUseCase addStockUseCase,
+    RemoveStockUseCase removeStockUseCase)
 {
     _createProductUseCase = createProductUseCase;
     _getAllProductsUseCase = getAllProductsUseCase;
     _getProductByIdUseCase = getProductByIdUseCase;
     _updateProductUseCase = updateProductUseCase;
     _deleteProductUseCase = deleteProductUseCase;
+    _addStockUseCase = addStockUseCase;
+    _removeStockUseCase = removeStockUseCase;
 }
 
     [HttpPost]
@@ -124,6 +132,56 @@ public async Task<IActionResult> DeleteAsync(
     }
 
     return NoContent();
+}
+
+[HttpPost("{id:guid}/stock/entry")]
+[ProducesResponseType<AddStockResponse>(
+    StatusCodes.Status200OK)]
+[ProducesResponseType(
+    StatusCodes.Status404NotFound)]
+[ProducesResponseType(
+    StatusCodes.Status400BadRequest)]
+public async Task<ActionResult<AddStockResponse>> AddStockAsync(
+    Guid id,
+    AddStockRequest request,
+    CancellationToken cancellationToken)
+{
+    var response = await _addStockUseCase.ExecuteAsync(
+        id,
+        request,
+        cancellationToken);
+
+    if (response is null)
+    {
+        return NotFound();
+    }
+
+    return Ok(response);
+}
+
+[HttpPost("{id:guid}/stock/exit")]
+[ProducesResponseType<RemoveStockResponse>(
+    StatusCodes.Status200OK)]
+[ProducesResponseType(
+    StatusCodes.Status404NotFound)]
+[ProducesResponseType(
+    StatusCodes.Status400BadRequest)]
+public async Task<ActionResult<RemoveStockResponse>> RemoveStockAsync(
+    Guid id,
+    RemoveStockRequest request,
+    CancellationToken cancellationToken)
+{
+    var response = await _removeStockUseCase.ExecuteAsync(
+        id,
+        request,
+        cancellationToken);
+
+    if (response is null)
+    {
+        return NotFound();
+    }
+
+    return Ok(response);
 }
 
 }

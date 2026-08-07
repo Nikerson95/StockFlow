@@ -14,6 +14,7 @@ public class StockFlowDbContext : DbContext
     public DbSet<Product> Products => Set<Product>();
 
     public DbSet<Category> Categories => Set<Category>();
+    public DbSet<StockMovement> StockMovements => Set<StockMovement>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
