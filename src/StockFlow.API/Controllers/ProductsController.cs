@@ -6,6 +6,7 @@ using StockFlow.Application.Products.Update;
 using StockFlow.Application.Products.Delete;
 using StockFlow.Application.Stock.Entry;
 using StockFlow.Application.Stock.Exit;
+using StockFlow.Application.Stock.History;
 
 namespace StockFlow.API.Controllers;
 
@@ -20,6 +21,7 @@ public class ProductsController : ControllerBase
     private readonly DeleteProductUseCase _deleteProductUseCase;
     private readonly AddStockUseCase _addStockUseCase;
     private readonly RemoveStockUseCase _removeStockUseCase;
+    private readonly GetStockMovementsUseCase _getStockMovementsUseCase;
 
     public ProductsController(
     CreateProductUseCase createProductUseCase,
@@ -28,7 +30,8 @@ public class ProductsController : ControllerBase
     UpdateProductUseCase updateProductUseCase,
     DeleteProductUseCase deleteProductUseCase,
     AddStockUseCase addStockUseCase,
-    RemoveStockUseCase removeStockUseCase)
+    RemoveStockUseCase removeStockUseCase,
+    GetStockMovementsUseCase getStockMovementsUseCase)
 {
     _createProductUseCase = createProductUseCase;
     _getAllProductsUseCase = getAllProductsUseCase;
@@ -37,6 +40,7 @@ public class ProductsController : ControllerBase
     _deleteProductUseCase = deleteProductUseCase;
     _addStockUseCase = addStockUseCase;
     _removeStockUseCase = removeStockUseCase;
+    _getStockMovementsUseCase = getStockMovementsUseCase;
 }
 
     [HttpPost]
@@ -174,6 +178,28 @@ public async Task<ActionResult<RemoveStockResponse>> RemoveStockAsync(
     var response = await _removeStockUseCase.ExecuteAsync(
         id,
         request,
+        cancellationToken);
+
+    if (response is null)
+    {
+        return NotFound();
+    }
+
+    return Ok(response);
+}
+
+[HttpGet("{id:guid}/stock/movements")]
+[ProducesResponseType<IReadOnlyList<GetStockMovementsResponse>>(
+    StatusCodes.Status200OK)]
+[ProducesResponseType(
+    StatusCodes.Status404NotFound)]
+public async Task<ActionResult<IReadOnlyList<GetStockMovementsResponse>>>
+    GetStockMovementsAsync(
+        Guid id,
+        CancellationToken cancellationToken)
+{
+    var response = await _getStockMovementsUseCase.ExecuteAsync(
+        id,
         cancellationToken);
 
     if (response is null)
