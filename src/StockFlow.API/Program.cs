@@ -17,6 +17,8 @@ using StockFlow.Application.Stock.Entry;
 using StockFlow.Application.Stock.Exit;
 using StockFlow.API.ExceptionHandlers;
 using StockFlow.Application.Stock.History;
+using StockFlow.Application.Products.LowStock;
+using StockFlow.Application.Stock.GetAllMovements;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +53,8 @@ builder.Services.AddScoped<CreateProductUseCase>();
 builder.Services.AddScoped<AddStockUseCase>();
 builder.Services.AddScoped<RemoveStockUseCase>();
 builder.Services.AddScoped<GetStockMovementsUseCase>();
+builder.Services.AddScoped<GetLowStockProductsUseCase>();
+builder.Services.AddScoped<GetAllStockMovementsUseCase>();
 
 
 var app = builder.Build();

@@ -40,4 +40,15 @@ public class StockMovementRepository : IStockMovementRepository
     {
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<IReadOnlyList<StockMovement>> GetAllAsync(
+    CancellationToken cancellationToken = default)
+{
+    return await _dbContext.StockMovements
+        .AsNoTracking()
+        .Include(movement => movement.Product)
+        .OrderByDescending(movement => movement.CreatedAt)
+        .ToListAsync(cancellationToken);
+}
+
 }

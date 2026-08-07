@@ -4,6 +4,8 @@ namespace StockFlow.Application.Repositories;
 
 public interface IStockMovementRepository
 {
+    Task<IReadOnlyList<StockMovement>> GetAllAsync(
+    CancellationToken cancellationToken = default);
     Task AddAsync(
         StockMovement movement,
         CancellationToken cancellationToken = default);

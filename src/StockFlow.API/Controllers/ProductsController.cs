@@ -7,6 +7,7 @@ using StockFlow.Application.Products.Delete;
 using StockFlow.Application.Stock.Entry;
 using StockFlow.Application.Stock.Exit;
 using StockFlow.Application.Stock.History;
+using StockFlow.Application.Products.LowStock;
 
 namespace StockFlow.API.Controllers;
 
@@ -22,6 +23,7 @@ public class ProductsController : ControllerBase
     private readonly AddStockUseCase _addStockUseCase;
     private readonly RemoveStockUseCase _removeStockUseCase;
     private readonly GetStockMovementsUseCase _getStockMovementsUseCase;
+    private readonly GetLowStockProductsUseCase _getLowStockProductsUseCase;
 
     public ProductsController(
     CreateProductUseCase createProductUseCase,
@@ -31,7 +33,8 @@ public class ProductsController : ControllerBase
     DeleteProductUseCase deleteProductUseCase,
     AddStockUseCase addStockUseCase,
     RemoveStockUseCase removeStockUseCase,
-    GetStockMovementsUseCase getStockMovementsUseCase)
+    GetStockMovementsUseCase getStockMovementsUseCase,
+    GetLowStockProductsUseCase getLowStockProductsUseCase)
 {
     _createProductUseCase = createProductUseCase;
     _getAllProductsUseCase = getAllProductsUseCase;
@@ -41,6 +44,7 @@ public class ProductsController : ControllerBase
     _addStockUseCase = addStockUseCase;
     _removeStockUseCase = removeStockUseCase;
     _getStockMovementsUseCase = getStockMovementsUseCase;
+    _getLowStockProductsUseCase = getLowStockProductsUseCase;
 }
 
     [HttpPost]
@@ -206,6 +210,18 @@ public async Task<ActionResult<IReadOnlyList<GetStockMovementsResponse>>>
     {
         return NotFound();
     }
+
+    return Ok(response);
+}
+
+[HttpGet("low-stock")]
+[ProducesResponseType<IReadOnlyList<GetLowStockProductsResponse>>(
+    StatusCodes.Status200OK)]
+public async Task<ActionResult<IReadOnlyList<GetLowStockProductsResponse>>>
+    GetLowStockAsync(CancellationToken cancellationToken)
+{
+    var response = await _getLowStockProductsUseCase.ExecuteAsync(
+        cancellationToken);
 
     return Ok(response);
 }
