@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using StockFlow.Application.Products.Create;
 using StockFlow.Application.Products.GetAll;
 using StockFlow.Application.Products.GetById;
+using StockFlow.Application.Products.Update;
 
 namespace StockFlow.API.Controllers;
 
@@ -12,15 +13,18 @@ public class ProductsController : ControllerBase
     private readonly CreateProductUseCase _createProductUseCase;
     private readonly GetAllProductsUseCase _getAllProductsUseCase;
     private readonly GetProductByIdUseCase _getProductByIdUseCase;
+    private readonly UpdateProductUseCase _updateProductUseCase;
 
     public ProductsController(
     CreateProductUseCase createProductUseCase,
     GetAllProductsUseCase getAllProductsUseCase,
-    GetProductByIdUseCase getProductByIdUseCase)
+    GetProductByIdUseCase getProductByIdUseCase,
+    UpdateProductUseCase updateProductUseCase)
 {
     _createProductUseCase = createProductUseCase;
     _getAllProductsUseCase = getAllProductsUseCase;
     _getProductByIdUseCase = getProductByIdUseCase;
+    _updateProductUseCase = updateProductUseCase;
 }
 
     [HttpPost]
@@ -73,4 +77,30 @@ public async Task<ActionResult<GetProductByIdResponse>> GetByIdAsync(
 
     return Ok(response);
 }
+
+[HttpPut("{id:guid}")]
+[ProducesResponseType<UpdateProductResponse>(
+    StatusCodes.Status200OK)]
+[ProducesResponseType(
+    StatusCodes.Status404NotFound)]
+[ProducesResponseType(
+    StatusCodes.Status400BadRequest)]
+public async Task<ActionResult<UpdateProductResponse>> UpdateAsync(
+    Guid id,
+    UpdateProductRequest request,
+    CancellationToken cancellationToken)
+{
+    var response = await _updateProductUseCase.ExecuteAsync(
+        id,
+        request,
+        cancellationToken);
+
+    if (response is null)
+    {
+        return NotFound();
+    }
+
+    return Ok(response);
+}
+
 }

@@ -18,6 +18,32 @@ public class Product
 
 public Category Category { get; private set; } = null!;
 
+public void Update(
+    string name,
+    string description,
+    decimal price,
+    int minimumStock,
+    Guid categoryId)
+{
+    ValidateName(name);
+    ValidatePrice(price);
+    ValidateMinimumStock(minimumStock);
+    ValidateCategoryId(categoryId);
+
+    Name = name.Trim();
+    Description = description.Trim();
+    Price = price;
+    MinimumStock = minimumStock;
+    CategoryId = categoryId;
+}
+
+public void ChangeCategory(Guid categoryId)
+{
+    ValidateCategoryId(categoryId);
+
+    CategoryId = categoryId;
+}
+
 public Product(
     string name,
     string description,
