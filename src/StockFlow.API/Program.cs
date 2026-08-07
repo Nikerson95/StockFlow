@@ -1,3 +1,6 @@
+using FluentValidation;
+using StockFlow.Application.Stock.Entry;
+using StockFlow.Application.Stock.Exit;
 using Scalar.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using StockFlow.Infrastructure.Persistence;
@@ -13,12 +16,11 @@ using StockFlow.Application.Products.GetAll;
 using StockFlow.Application.Products.GetById;
 using StockFlow.Application.Products.Update;
 using StockFlow.Application.Products.Delete;
-using StockFlow.Application.Stock.Entry;
-using StockFlow.Application.Stock.Exit;
 using StockFlow.API.ExceptionHandlers;
 using StockFlow.Application.Stock.History;
 using StockFlow.Application.Products.LowStock;
 using StockFlow.Application.Stock.GetAllMovements;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +28,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-
+builder.Services.AddValidatorsFromAssemblyContaining<AddStockRequestValidator>();
 builder.Services.AddOpenApi();
 
 var connectionString = builder.Configuration.GetConnectionString(
@@ -55,6 +57,7 @@ builder.Services.AddScoped<RemoveStockUseCase>();
 builder.Services.AddScoped<GetStockMovementsUseCase>();
 builder.Services.AddScoped<GetLowStockProductsUseCase>();
 builder.Services.AddScoped<GetAllStockMovementsUseCase>();
+builder.Services.AddValidatorsFromAssemblyContaining<AddStockRequestValidator>();
 
 
 var app = builder.Build();

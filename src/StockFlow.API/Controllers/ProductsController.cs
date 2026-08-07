@@ -8,6 +8,7 @@ using StockFlow.Application.Stock.Entry;
 using StockFlow.Application.Stock.Exit;
 using StockFlow.Application.Stock.History;
 using StockFlow.Application.Products.LowStock;
+using FluentValidation;
 
 namespace StockFlow.API.Controllers;
 
@@ -24,6 +25,8 @@ public class ProductsController : ControllerBase
     private readonly RemoveStockUseCase _removeStockUseCase;
     private readonly GetStockMovementsUseCase _getStockMovementsUseCase;
     private readonly GetLowStockProductsUseCase _getLowStockProductsUseCase;
+    private readonly IValidator<AddStockRequest> _addStockValidator;
+    private readonly IValidator<RemoveStockRequest> _removeStockValidator;
 
     public ProductsController(
     CreateProductUseCase createProductUseCase,
@@ -34,7 +37,9 @@ public class ProductsController : ControllerBase
     AddStockUseCase addStockUseCase,
     RemoveStockUseCase removeStockUseCase,
     GetStockMovementsUseCase getStockMovementsUseCase,
-    GetLowStockProductsUseCase getLowStockProductsUseCase)
+    GetLowStockProductsUseCase getLowStockProductsUseCase,
+    IValidator<AddStockRequest> addStockValidator,
+IValidator<RemoveStockRequest> removeStockValidator)
 {
     _createProductUseCase = createProductUseCase;
     _getAllProductsUseCase = getAllProductsUseCase;
@@ -45,6 +50,8 @@ public class ProductsController : ControllerBase
     _removeStockUseCase = removeStockUseCase;
     _getStockMovementsUseCase = getStockMovementsUseCase;
     _getLowStockProductsUseCase = getLowStockProductsUseCase;
+    _addStockValidator = addStockValidator;
+    _removeStockValidator = removeStockValidator;
 }
 
     [HttpPost]
@@ -154,6 +161,19 @@ public async Task<ActionResult<AddStockResponse>> AddStockAsync(
     AddStockRequest request,
     CancellationToken cancellationToken)
 {
+    var validationResult = await _addStockValidator.ValidateAsync(
+        request,
+        cancellationToken);
+
+    if (!validationResult.IsValid)
+    {
+        return BadRequest(new
+        {
+            errors = validationResult.Errors
+                .Select(error => error.ErrorMessage)
+        });
+    }
+
     var response = await _addStockUseCase.ExecuteAsync(
         id,
         request,
