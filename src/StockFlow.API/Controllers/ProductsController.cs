@@ -3,6 +3,7 @@ using StockFlow.Application.Products.Create;
 using StockFlow.Application.Products.GetAll;
 using StockFlow.Application.Products.GetById;
 using StockFlow.Application.Products.Update;
+using StockFlow.Application.Products.Delete;
 
 namespace StockFlow.API.Controllers;
 
@@ -14,17 +15,20 @@ public class ProductsController : ControllerBase
     private readonly GetAllProductsUseCase _getAllProductsUseCase;
     private readonly GetProductByIdUseCase _getProductByIdUseCase;
     private readonly UpdateProductUseCase _updateProductUseCase;
+    private readonly DeleteProductUseCase _deleteProductUseCase;
 
     public ProductsController(
     CreateProductUseCase createProductUseCase,
     GetAllProductsUseCase getAllProductsUseCase,
     GetProductByIdUseCase getProductByIdUseCase,
-    UpdateProductUseCase updateProductUseCase)
+    UpdateProductUseCase updateProductUseCase,
+    DeleteProductUseCase deleteProductUseCase)
 {
     _createProductUseCase = createProductUseCase;
     _getAllProductsUseCase = getAllProductsUseCase;
     _getProductByIdUseCase = getProductByIdUseCase;
     _updateProductUseCase = updateProductUseCase;
+    _deleteProductUseCase = deleteProductUseCase;
 }
 
     [HttpPost]
@@ -101,6 +105,25 @@ public async Task<ActionResult<UpdateProductResponse>> UpdateAsync(
     }
 
     return Ok(response);
+}
+
+[HttpDelete("{id:guid}")]
+[ProducesResponseType(StatusCodes.Status204NoContent)]
+[ProducesResponseType(StatusCodes.Status404NotFound)]
+public async Task<IActionResult> DeleteAsync(
+    Guid id,
+    CancellationToken cancellationToken)
+{
+    var deleted = await _deleteProductUseCase.ExecuteAsync(
+        id,
+        cancellationToken);
+
+    if (!deleted)
+    {
+        return NotFound();
+    }
+
+    return NoContent();
 }
 
 }
